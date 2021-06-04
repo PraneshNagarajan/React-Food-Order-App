@@ -1,0 +1,29 @@
+.main {
+    position: absolute;
+    inset : 0 0 auto 0;
+    background-color: slategray;
+    width: 100%;
+    height: 100%
+}
+.cart-main {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 20%;
+    width: 60%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cart-item {
+    position: absolute;
+    inset: 65% 0 auto 0;
+    width: 100%;
+}
+
+.scroll{
+    max-height: 400px;
+   overflow-y: scroll;
+
+}

@@ -2,7 +2,6 @@ import logo from "./logo.svg";
 import "./App.css";
 import 'bootstrap/dist/css/bootstrap.min.css'
 import HomePage from './Pages/HomePage'
-import ItemsContext from "./Datas/Items-Context";
 function App() {
   return (
     // If you pass dynamic value to components then only <Context.provider>. Otherwise there is no need.
