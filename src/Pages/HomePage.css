@@ -18,12 +18,13 @@
 
 .cart-item {
     position: absolute;
-    inset: 65% 0 auto 0;
+    inset: 70% 0 auto 0;
     width: 100%;
+    background-color: slategray;
 }
 
 .scroll{
-    max-height: 400px;
+    max-height: 500px;
    overflow-y: scroll;
 
 }

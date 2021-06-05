@@ -1,10 +1,15 @@
 import { Navbar, Badge, Container, Nav, Button,Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartPlus, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState } from "react";
 
 const NavBar = (props) => {
+  const [cartSize, setSize] = useState(0)
+  useEffect(()=>{
+    setSize(props.size)
+  },[props.size])
   return (
-      <Navbar sticky="top" collapseOnSelect bg="primary" variant="dark" expand="md">
+      <Navbar fixed="top" collapseOnSelect bg="primary" variant="dark" expand="md">
               <Container fluid>
               <Navbar.Brand>
           <img
@@ -53,7 +58,7 @@ const NavBar = (props) => {
               ></FontAwesomeIcon>
               Orders
               <Badge className="ml-1" pill variant="warning">
-                4
+                {cartSize}
               </Badge>
             </Button>
         </Nav.Item>
