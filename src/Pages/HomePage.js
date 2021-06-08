@@ -1,221 +1,107 @@
-import "./HomePage.css";
-import NavBar from "../Components/NavBar/NavBar";
-import DialogModal from "../Components/Modal/Modal";
-import { Card, FormControl, Button } from "react-bootstrap";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
-import mealsImage from "../images/meals.jpg";
 import { useContext, useReducer, useState } from "react";
+import { Card } from "react-bootstrap";
+import "./HomePage.css";
+import mealsImage from "../images/meals.jpg"
+import NavBar from "../UI/Header/NavBar";
+import DialogModal from "../UI/DiaglogModal/Modal"
 import ItemContext from "../Datas/Item-contex";
+import MealsInfo from "../UI/Meals/MealsInfo";
+import MealsItem from "../UI/Meals/MealsItem";
 
-const cartHandler = (state, action) => {
+const defaultCartItems = {
+  item: [],
+  total: 0,
+};
+
+const cartReducer = (state, action) => {
+  let updatedItems;
+  let updatedItem;
+  const index = state.item.findIndex((item) => item.id === action.item.id);
+  const exsistingItems = state.item[index];
   if (action.type === "ADD") {
-    const match = state.filter((food) => food.item === action.payload.item);
-    const datas = state.filter((food) => food.item !== action.payload.item);
-    return match.length > 0
-      ? [
-          ...datas,
-          {
-            ...action.payload,
-            quantity: match["0"].quantity + action.payload.quantity,
-            total: match["0"].total + action.payload.total,
-          },
-        ]
-      : [...datas, action.payload];
+    if (exsistingItems) {
+      updatedItem = {
+        ...exsistingItems,
+        amount: exsistingItems.amount + exsistingItems.price * action.item.size,
+        size: exsistingItems.size + action.item.size,
+      };
+      updatedItems = [...state.item];
+      updatedItems[index] = updatedItem;
+    } else {
+      updatedItems = state.item.concat({
+        ...action.item,
+        amount: action.item.price * action.item.size,
+      });
+    }
+    // reduce two arguments, `},0`- set intial is zero if initial value is not there
+    return {
+      item: updatedItems,
+      total: updatedItems.reduce((prev, current) => {
+        return prev + current.amount;
+      }, 0),
+    };
   } else {
-    return state.filter((food) => food.item !== action.payload.item);
+    if (exsistingItems.size > 1) {
+      updatedItem = {
+        ...exsistingItems,
+        amount: exsistingItems.amount - exsistingItems.price,
+        size: exsistingItems.size - action.item.size,
+      };
+      updatedItems = [...state.item];
+      updatedItems[index] = updatedItem;
+    } else {
+      updatedItems = state.item.filter((item) => item.id !== action.item.id);
+    }
+    // reduce two arguments, `},0`- set intial is zero if initial value is not there
+    return {
+      item: updatedItems,
+      total: updatedItems.reduce((prev, current) => {
+        return prev + current.amount;
+      }, 0),
+    };
   }
 };
 
 const HomePage = () => {
   const [isShow, setShow] = useState(false);
-  const items = useContext(ItemContext);
-  const [count, setCount] = useState(0);
-  const [cartItems, CartDispatcher] = useReducer(cartHandler, []);
-  const onAddQuantityHandler = (value) => {
-    setCount(value);
-  };
+  const ItemCxt = useContext(ItemContext);
+  const [cartItems, setCartDispatcher] = useReducer(
+    cartReducer,
+    defaultCartItems
+  );
+
   const onShowModalHandler = () => {
     setShow(!isShow);
   };
+
+  const onAddCartItemsHandler = (item) => {
+    setCartDispatcher({ type: "ADD", item: item });
+  };
+
+  const onRemoveCartItemsHandler = (item) => {
+    setCartDispatcher({ type: "REMOVE", item: item });
+  };
+
+  const itemLists = {
+    items: ItemCxt.items,
+    addCart: onAddCartItemsHandler,
+    removeCart: onRemoveCartItemsHandler,
+  };
+
   return (
-    <div className="main">
-      <NavBar showFunction={onShowModalHandler} size={cartItems.length} />
+    <ItemContext.Provider value={itemLists}>
+      <NavBar showFunction={onShowModalHandler} items={cartItems.item} />
       <Card>
         <Card.Img src={mealsImage}></Card.Img>
       </Card>
-
-      <div className="cart-main text-white">
-        <Card bg="dark">
-          <Card.Body className="text-center">
-            <Card.Title>Delicious Food, Delivered to you</Card.Title>
-            <Card.Text>
-              Choose your meal from broad selection of available meals and enjoy
-              your delicious luch or dinner at home.
-            </Card.Text>
-            <Card.Text>
-              All your meals are cooked with high quality of ingredients, No
-              used oils, Just-In-Time and of course by experienced chefs.
-            </Card.Text>
-          </Card.Body>
-        </Card>
-      </div>
-      <div className="cart-item p-5 my-5">
-        <Card>
-          <Card.Body className="scroll">
-            {items.map((food, index) => {
-              return (
-                <div key={index}>
-                  <div className="d-flex justify-content-between">
-                    <div>
-                      <Card.Title>{food.item}</Card.Title>
-                      <Card.Text className="font-italic text-muted">
-                        {food.about}
-                      </Card.Text>
-                      <Card.Title className="text-danger">
-                        ${food.price}
-                      </Card.Title>
-                    </div>
-                    <div>
-                      <div className="d-flex justify-content-between mb-2">
-                        <Card.Title className="mr-2">Amount</Card.Title>
-                        <FormControl
-                          type="number"
-                          min="1"
-                          max=""
-                          step="1"
-                          onChange={(e) => onAddQuantityHandler(e.target.value)}
-                        />
-                      </div>
-                      <div className="d-flex justify-content-end w-75">
-                        <Button
-                          variant="primary"
-                          onClick={() =>
-                            CartDispatcher({
-                              type: count > 0 ? "ADD" : "DEL",
-                              payload: {
-                                ...food,
-                                quantity: Number(count),
-                                total: count * food.price,
-                              },
-                            })
-                          }
-                        >
-                          <FontAwesomeIcon icon={faCartPlus}></FontAwesomeIcon>{" "}
-                          ADD
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                  <hr></hr>
-                </div>
-              );
-            })}
-            {items.map((food, index) => {
-              return (
-                <div key={index}>
-                  <div className="d-flex justify-content-between">
-                    <div>
-                      <Card.Title>{food.item}</Card.Title>
-                      <Card.Text className="font-italic text-muted">
-                        {food.about}
-                      </Card.Text>
-                      <Card.Title className="text-danger">
-                        ${food.price}
-                      </Card.Title>
-                    </div>
-                    <div>
-                      <div className="d-flex justify-content-between mb-2">
-                        <Card.Title className="mr-2">Amount</Card.Title>
-                        <FormControl
-                          type="number"
-                          min="1"
-                          max=""
-                          step="1"
-                          onChange={(e) => onAddQuantityHandler(e.target.value)}
-                        />
-                      </div>
-                      <div className="d-flex justify-content-end w-75">
-                        <Button
-                          variant="primary"
-                          onClick={() =>
-                            CartDispatcher({
-                              type: count > 0 ? "ADD" : "DEL",
-                              payload: {
-                                ...food,
-                                quantity: count,
-                                total: count * food.price,
-                              },
-                            })
-                          }
-                        >
-                          <FontAwesomeIcon icon={faCartPlus}></FontAwesomeIcon>{" "}
-                          ADD
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                  <hr></hr>
-                </div>
-              );
-            })}
-            {items.map((food, index) => {
-              return (
-                <div key={index}>
-                  <div className="d-flex justify-content-between">
-                    <div>
-                      <Card.Title>{food.item}</Card.Title>
-                      <Card.Text className="font-italic text-muted">
-                        {food.about}
-                      </Card.Text>
-                      <Card.Title className="text-danger">
-                        ${food.price}
-                      </Card.Title>
-                    </div>
-                    <div>
-                      <div className="d-flex justify-content-between mb-2">
-                        <Card.Title className="mr-2">Amount</Card.Title>
-                        <FormControl
-                          type="number"
-                          min="1"
-                          max=""
-                          step="1"
-                          onChange={(e) => onAddQuantityHandler(e.target.value)}
-                        />
-                      </div>
-                      <div className="d-flex justify-content-end w-75">
-                        <Button
-                          variant="primary"
-                          onClick={() =>
-                            CartDispatcher({
-                              type: count > 0 ? "ADD" : "DEL",
-                              payload: {
-                                ...food,
-                                quantity: count,
-                                total: count * food.price,
-                              },
-                            })
-                          }
-                        >
-                          <FontAwesomeIcon icon={faCartPlus}></FontAwesomeIcon>{" "}
-                          ADD
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                  <hr></hr>
-                </div>
-              );
-            })}
-          </Card.Body>
-        </Card>
-      </div>
+      <MealsInfo />
+      <MealsItem />
       <DialogModal
-        items={cartItems}
+        datas={cartItems}
         show={isShow}
         showFunction={onShowModalHandler}
       />
-    </div>
+    </ItemContext.Provider>
   );
 };
 
