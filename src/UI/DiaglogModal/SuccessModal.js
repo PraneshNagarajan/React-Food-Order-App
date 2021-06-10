@@ -1,6 +1,9 @@
+import { useContext } from "react";
 import { Modal, Button } from "react-bootstrap";
+import ItemContex from '../../Datas/Item-contex'
 
 const SuccessModal = (props) => {
+  const itemCxt = useContext(ItemContex)
   return (
     <Modal show={props.show} onHide={(e) => props.showFunction()}>
       <Modal.Header closeButton>
@@ -24,7 +27,7 @@ const SuccessModal = (props) => {
         </h5>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="primary">Track your order</Button>
+        <Button variant="primary" onClick={itemCxt.clearCart}>Track your order</Button>
         <Button variant="danger" onClick={(e) => props.showFunction()}>
           close
         </Button>

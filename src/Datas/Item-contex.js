@@ -27,7 +27,8 @@ items: [{
 }
 ],
 addCart: () => {},
-removeCart : () =>{}
+removeCart : () =>{},
+clearCart : () => {}
 }
     
 )

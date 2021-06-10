@@ -40,7 +40,7 @@ const cartReducer = (state, action) => {
         return prev + current.amount;
       }, 0),
     };
-  } else {
+  } else if(action.type === "REMOVE"){
     if (exsistingItems.size > 1) {
       updatedItem = {
         ...exsistingItems,
@@ -59,6 +59,8 @@ const cartReducer = (state, action) => {
         return prev + current.amount;
       }, 0),
     };
+  } else {
+    return(action.item)
   }
 };
 
@@ -81,11 +83,15 @@ const HomePage = () => {
   const onRemoveCartItemsHandler = (item) => {
     setCartDispatcher({ type: "REMOVE", item: item });
   };
-
+ 
+  const onClearCartItemsHandler = () => {
+    setCartDispatcher({ type: "CLEAR", item: defaultCartItems});
+  }
   const itemLists = {
     items: ItemCxt.items,
     addCart: onAddCartItemsHandler,
     removeCart: onRemoveCartItemsHandler,
+    clearCart: onClearCartItemsHandler
   };
 
   return (

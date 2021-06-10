@@ -9,65 +9,33 @@ import {
   Row,
   Col,
   Button,
-  FormGroup,
 } from "react-bootstrap";
 
 const DialogModal = (props) => {
-  const [cartItems, setCartItems] = useState([]);
   const ItemCxt = useContext(ItemContext);
-  const [size, setSize] = useState(0);
   const [show, setShow] = useState(false);
   const [isPlaced, setPlaced] = useState(false);
 
-  useEffect(() => {
-    setCartItems(props.datas.item);
-  }, [props.datas.item]);
-
-  const getItemSizeHandler = (event) => {
-    setSize(+event.target.value);
-  };
   const onShowModalHandler = () => {
     setShow(!show);
     setPlaced(!isPlaced);
   };
 
   const onPlacedOrderHandler = () => {
-    setCartItems([]);
     props.showFunction();
     setShow(!show);
     setPlaced(!isPlaced);
   };
 
-  const onSetCartItemsHandler = (size, orders, actionFlag) => {
-    let sum = 0;
-    const data = cartItems.map((food) => {
-      if (food.item === orders.item) {
-        return {
-          ...orders,
-          quantity: size,
-          total: parseFloat(size * food.price).toFixed(2),
-        };
-      } else {
-        return food;
-      }
-    });
-    data.map((food) => {
-      sum += parseFloat(food.total);
-    });
-
-    //setTotal(sum);
-    setCartItems(data);
-  };
-
   return (
     <div>
-      {cartItems.length > 0 && (
+      {props.datas.item.length > 0 && (
         <Modal centered show={props.show} onHide={props.showFunction}>
           <Modal.Header closeButton>
             <h3>Order Summary</h3>{" "}
           </Modal.Header>
           <Modal.Body>
-            {cartItems.map((food, index) => {
+            {props.datas.item.map((food, index) => {
               return (
                 <div key={index}>
                   <Row className="d-flex justify-content-around">
@@ -99,10 +67,7 @@ const DialogModal = (props) => {
                             +
                           </Button>
                         </InputGroup.Prepend>
-                        <FormControl
-                          value={food.size}
-                          onChange={(e) => getItemSizeHandler(e)}
-                        />
+                        <FormControl value={food.size} />
                         <InputGroup.Append>
                           <Button
                             size="sm"
@@ -151,7 +116,7 @@ const DialogModal = (props) => {
         </Modal>
       )}
 
-      {cartItems.length === 0 && (
+      {props.datas.item.length === 0 && (
         <Modal centered show={props.show} onHide={props.showFunction}>
           <Modal.Header></Modal.Header>
           <Modal.Body className="d-flex justify-content-between">
