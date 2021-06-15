@@ -1,21 +1,27 @@
-import { useContext, useState } from "react";
-import { Card, FormControl, Button } from "react-bootstrap";
+import './MealsItem.css'
+import { useState } from "react";
+import { Card, FormControl, Button, Spinner } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
-import ItemContext from "../../Datas/Item-contex";
 
-const MealsItem = () => {
+const MealsItem = (props) => {
   const [size, setSize] = useState(0);
-  const itemcxt = useContext(ItemContext);
+  const itemcxt = props.value;
 
   const getItemSizeHandler = (event) => {
     setSize(+event.target.value);
   };
-  
+
   return (
     <div className="cart-item p-5 my-5">
       <Card>
         <Card.Body className="scroll">
+          {itemcxt.items.length === 0 && (
+            <div  className="d-flex justify-content-center">
+              <Spinner animation="border"  variant="primary">            
+            </Spinner>
+            </div>
+          )}
           {itemcxt.items.map((food, index) => {
             return (
               <div key={index}>

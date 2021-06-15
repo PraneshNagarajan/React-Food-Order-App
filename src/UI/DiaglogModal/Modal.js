@@ -116,18 +116,34 @@ const DialogModal = (props) => {
         </Modal>
       )}
 
-      {props.datas.item.length === 0 && (
-        <Modal centered show={props.show} onHide={props.showFunction}>
+      {(props.datas.item.length === 0 || props.error) && 
+        <Modal
+          centered
+          show={props.show || props.error}
+          backdrop="static"
+          keyboard={false}
+          onHide={props.showFunction}
+        >
           <Modal.Header></Modal.Header>
-          <Modal.Body className="d-flex justify-content-between">
-            <h5 className="text-center text-muted">No Items......</h5>
-            <Button variant="danger" onClick={props.showFunction}>
-              Close
-            </Button>
+          <Modal.Body
+            className={props.show ? `d-flex justify-content-between` : ``}
+          >
+            <h5
+              className={`text-center ${
+                !props.show ? `text-danger font-bold` : `text-muted`
+              }`}
+            >
+              {!props.show ? props.error : "No Items......"}
+            </h5>
+            {props.show && 
+              <Button variant="danger" onClick={props.showFunction}>
+                Close
+              </Button>
+            }
           </Modal.Body>
           <Modal.Footer></Modal.Footer>
         </Modal>
-      )}
+      }
       {isPlaced && (
         <SuccessModal showFunction={onShowModalHandler} show={show} />
       )}

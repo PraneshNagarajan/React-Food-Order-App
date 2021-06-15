@@ -19,6 +19,7 @@ const MealsInfo = () => {
       </div>
     )
 }
+// use memo - content doesn't if component get re-render
 // memo - memorization , check previous value and current value is changed only this component would re-render, 
 // e.g passing props but it doesn't change so, if parent component re-render based on state change. so child component would also re-render.
 // but, if child comp not get any new value. why re-render. it would be enhance performence.
@@ -30,4 +31,6 @@ const MealsInfo = () => {
 //         show={isShow}
 //         showFunction={onShowModalHandler}
 //       />
+//
+// if need to do same as function use  useCallback() // tell to store function in internal and don't re-createvg 
 export default React.memo(MealsInfo)
