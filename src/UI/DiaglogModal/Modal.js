@@ -10,11 +10,16 @@ import {
   Col,
   Button,
 } from "react-bootstrap";
+import CustomerInfo from "../Forms/CustomerInfoForm";
+import { Fragment } from "react";
+import useInput from "../../Hooks/input-hook";
 
 const DialogModal = (props) => {
+  const inputHook = useInput()
   const ItemCxt = useContext(ItemContext);
   const [show, setShow] = useState(false);
   const [isPlaced, setPlaced] = useState(false);
+  const isValid = inputHook.isFormValid
 
   const onShowModalHandler = () => {
     setShow(!show);
@@ -30,14 +35,16 @@ const DialogModal = (props) => {
   return (
     <div>
       {props.datas.item.length > 0 && (
-        <Modal centered show={props.show} onHide={props.showFunction}>
+        <Modal centered show={props.show} onHide={props.showFunction} keyboard={false} backdrop="static"
+        >
           <Modal.Header closeButton>
             <h3>Order Summary</h3>{" "}
           </Modal.Header>
           <Modal.Body>
             {props.datas.item.map((food, index) => {
               return (
-                <div key={index}>
+                // no nested loop might be affect performance. so use Fragment from single root wrapper .this will effect in DOM
+                <Fragment key={index}>
                   <Row className="d-flex justify-content-around">
                     <Col xs="4" sm="5" className="d-flex">
                       <h6>
@@ -94,10 +101,10 @@ const DialogModal = (props) => {
                     </Col>
                   </Row>
                   <hr></hr>
-                </div>
+                </Fragment>
               );
             })}
-
+            <CustomerInfo/>
             <div className="d-flex justify-content-between">
               <Modal.Title>Total Amount :</Modal.Title>
               <Modal.Title className="text-danger">
@@ -106,8 +113,8 @@ const DialogModal = (props) => {
             </div>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="primary" onClick={onPlacedOrderHandler}>
-              Place the order
+            <Button variant="primary" onClick={onPlacedOrderHandler} onClick={inputHook.submitEventHandler}  disabled={!isValid}>
+              Place the order 
             </Button>
             <Button variant="danger" onClick={props.showFunction}>
               Close
