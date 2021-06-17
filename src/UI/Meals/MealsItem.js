@@ -1,8 +1,9 @@
-import './MealsItem.css'
+// import './MealsItem.css'
 import { useState } from "react";
-import { Card, FormControl, Button, Spinner } from "react-bootstrap";
+import { Card, FormControl, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
+import Spinners from "../../Components/Spinner";
 
 const MealsItem = (props) => {
   const [size, setSize] = useState(0);
@@ -17,10 +18,7 @@ const MealsItem = (props) => {
       <Card>
         <Card.Body className="scroll">
           {itemcxt.items.length === 0 && (
-            <div  className="d-flex justify-content-center">
-              <Spinner animation="border"  variant="primary">            
-            </Spinner>
-            </div>
+            <Spinners type="spinner-style-1"></Spinners>
           )}
           {itemcxt.items.map((food, index) => {
             return (

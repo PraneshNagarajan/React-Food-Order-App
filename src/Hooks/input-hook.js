@@ -56,7 +56,7 @@ const inputReducer = (state, action) => {
       error: `${action.type} is requried.`,
     };
     return updatedDatas;
-  } else  {
+  } else {
     updatedDatas[index] = {
       name: action.type,
       isInvalid: false,
@@ -117,21 +117,28 @@ const inputReducer = (state, action) => {
 
 const useInput = () => {
   const [inputForm, inputDispatch] = useReducer(inputReducer, defaultInputs);
+  const [customerInfo, setCustomerInfo] = useState([]);
   const [isBlur, setIsBlur] = useState(false);
   const [value, setValue] = useState("");
   const [name, setName] = useState("");
-  const [isFormValid, setIsFormValid] = useState(false);
 
-  useEffect(() => {
-    let flag = false;
-    inputDispatch({ type: name, value, focus: isBlur });
-    setIsBlur(false);
-    for (let input in inputForm) {
-      if (inputForm[input]) {
-        flag = true;
+  const upadateInfoHandler = () => {
+    if (name !== "") {
+      let index = customerInfo.findIndex((field) => field.name === name);
+      let updatedDatas = { name, value };
+      if (index > -1) {
+        updatedDatas = customerInfo;
+        updatedDatas[index] = { name, value };
+        setCustomerInfo(updatedDatas);
+      } else {
+        setCustomerInfo([...customerInfo, updatedDatas]);
       }
     }
-    setIsFormValid(flag);
+  };
+  useEffect(() => {
+    inputDispatch({ type: name, value, focus: isBlur });
+    setIsBlur(false);
+    upadateInfoHandler();
   }, [isBlur, name, value]);
   const submitEventHandler = (event) => {
     event.preventDefault();
@@ -152,7 +159,7 @@ const useInput = () => {
     blurEventHandler,
     submitEventHandler,
     inputForm,
-    isFormValid,
+    customerInfo,
   };
 };
 

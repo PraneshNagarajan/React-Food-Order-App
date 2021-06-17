@@ -1,36 +1,37 @@
 import { useState } from "react";
-import axios from 'axios'
+import axios from "axios";
 
 const useHttp = () => {
-  const [isLoading, setIsLoading] = useState(true)
+  const [response, setResponse] = useState();
   const [error, setError] = useState([]);
 
   const request = (requestConfig, fetchData) => {
-    console.log('http')
-    setError([])
+    setError([]);
     let data = [];
-    setTimeout(()=> {
-      axios({url :requestConfig.url,
+    setTimeout(() => {
+      axios({
+        url: requestConfig.url,
         method: requestConfig.method,
-        headers: requestConfig.headers ? { 'content-type': 'application/json'} : {},
         data: requestConfig.body ? requestConfig.body : null,
-      }) 
+      })
         .then((response) => {
-          for (let item in response.data) {
-            data.push(response.data[item]);
+          setResponse(response);
+          if (requestConfig.method === "GET") {
+            for (let item in response.data) {
+              data.push(response.data[item]);
+            }
           }
           fetchData(data);
         })
         .catch((error) => {
-          setError(error.response.status+" : "+error.response.statusText);
+          setResponse(error);
+          setError(error.response.status + " : " + error.response.statusText);
         });
-    },3000)
-      setIsLoading(false)
+    }, 5000);
   };
 
   return {
     request,
-    isLoading,
     error,
   };
 };

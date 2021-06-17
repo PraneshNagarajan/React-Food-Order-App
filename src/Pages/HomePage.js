@@ -117,7 +117,6 @@ const HomePage = () => {
     removeCart: onRemoveCartItemsHandler,
     clearCart: onClearCartItemsHandler,
   };
-  console.log(httpError.length === 0);
   const response =
     httpError.length === 0 ? (
       <Fragment>
@@ -140,13 +139,13 @@ const HomePage = () => {
   return (
     <ItemContext.Provider value={itemLists}>
       <Fragment>
-      <NavBar showFunction={onShowModalHandler} items={cartItems.item} />
-          <Card>
-            <Card.Img src={mealsImage}></Card.Img>
-          </Card>
-          <MealsInfo />
-          {response}
-        </Fragment>
+        <NavBar showFunction={onShowModalHandler} items={cartItems.item} />
+        <Card>
+          <Card.Img src={mealsImage}></Card.Img>
+        </Card>
+        <MealsInfo />
+        {response}
+      </Fragment>
     </ItemContext.Provider>
   );
 };
