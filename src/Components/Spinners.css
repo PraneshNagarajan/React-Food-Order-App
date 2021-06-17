@@ -1,0 +1,23 @@
+.spinner-style-1{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.spinner-body{
+    width: 5rem;
+    height: 5rem;
+}
+
+
+.spinner-style-2 {
+    position:absolute;
+    inset: 0 auto -100% auto;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+    background-color: rgba(0,0,0,0.5);
+}
