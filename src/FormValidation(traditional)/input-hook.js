@@ -79,7 +79,7 @@ const inputReducer = (state, action) => {
             name: action.type,
             isInvalid: true,
             valid: false,
-            error: "No Integer, WhiteSpaces & Special characters",
+            error: "Integer, WhiteSpaces & Special characters are not allowed",
           };
         }
         return updatedDatas;

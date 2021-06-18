@@ -27,7 +27,7 @@ const useHttp = () => {
           setResponse(error);
           setError(error.response.status + " : " + error.response.statusText);
         });
-    }, 5000);
+    }, 3000);
   };
 
   return {

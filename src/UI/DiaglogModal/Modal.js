@@ -20,15 +20,15 @@ const DialogModal = (props) => {
   const ItemCxt = useContext(ItemContext);
   const [show, setShow] = useState(false);
   const [isPlaced, setPlaced] = useState(false);
-  const [isValid, setIsValid] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(true);
   const [customerInfo, setCustomerInfo] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const inputFormhandler = (formData, customerData) => {
-    let result = formData.filter((item) => item.valid !== true);
-    setIsValid(result.length > 0 ? false : true);
+  const getDataHandler = (formStatus, customerData) => {
+    setIsDisabled(formStatus);
     setCustomerInfo(customerData);
   };
+
   const onShowModalHandler = () => {
     setShow(!show);
     setPlaced(!isPlaced);
@@ -135,7 +135,7 @@ const DialogModal = (props) => {
                     </Fragment>
                   );
                 })}
-                <CustomerInfo inputFunction={inputFormhandler} />
+                <CustomerInfo getFunction={getDataHandler} />
                 <div className="d-flex justify-content-between">
                   <Modal.Title>Total Amount :</Modal.Title>
                   <Modal.Title className="text-danger">
@@ -150,7 +150,7 @@ const DialogModal = (props) => {
             <Button
               variant="primary"
               onClick={onPlacedOrderHandler}
-              disabled={!isValid}
+              disabled={isDisabled}
             >
               Place the order
             </Button>
