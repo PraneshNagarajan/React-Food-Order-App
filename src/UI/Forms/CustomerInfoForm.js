@@ -214,7 +214,7 @@ const CustomerInfo = (props) => {
               <FormLabel htmlFor="address">Addresss</FormLabel>
               <FormControl
                 isInvalid={
-                  (formik.touched.ad || formik.values.address.length > 0) &&
+                  (formik.touched.address || formik.values.address.length > 0) &&
                   formik.errors.address
                 }
                 isValid={
