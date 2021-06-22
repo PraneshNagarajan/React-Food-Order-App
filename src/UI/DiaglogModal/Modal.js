@@ -14,6 +14,7 @@ import CustomerInfo from "../Forms/CustomerInfoForm";
 import { Fragment } from "react";
 import useHttp from "../../Hooks/http-hook";
 import Spinners from "../../Components/Spinner";
+import { useSelector } from "react-redux";
 
 const DialogModal = (props) => {
   const http = useHttp();
@@ -23,7 +24,7 @@ const DialogModal = (props) => {
   const [isDisabled, setIsDisabled] = useState(true);
   const [customerInfo, setCustomerInfo] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
+  const total = useSelector(state => state.cartItems.total)
   const getDataHandler = (formStatus, customerData) => {
     setIsDisabled(formStatus);
     setCustomerInfo(customerData);
@@ -36,12 +37,12 @@ const DialogModal = (props) => {
 
   const onPlacedOrderHandler = () => {
     setIsLoading(true);
-    const flag = http.request(
+    http.request(
       {
         url: "https://react-shop-82e08-default-rtdb.firebaseio.com/placedOrders.json",
         method: "POST",
         body: {
-          items: props.datas.item,
+          items: props.items,
           customerInfo,
         },
       },
@@ -56,7 +57,7 @@ const DialogModal = (props) => {
 
   return (
     <Fragment>
-      {props.datas.item.length > 0 && (
+      {props.items.length > 0 && (
         <Modal
           centered
           show={props.show}
@@ -70,7 +71,7 @@ const DialogModal = (props) => {
           <Modal.Body>
             {!isLoading && (
               <div>
-                {props.datas.item.map((food, index) => {
+                {props.items.map((food, index) => {
                   return (
                     // no nested loop might be affect performance. so use Fragment from single root wrapper .this will effect in DOM
                     <Fragment key={index}>
@@ -139,7 +140,7 @@ const DialogModal = (props) => {
                 <div className="d-flex justify-content-between">
                   <Modal.Title>Total Amount :</Modal.Title>
                   <Modal.Title className="text-danger">
-                    {`$ ${parseFloat(props.datas.total).toFixed(2)}`}
+                    {`$ ${parseFloat(total).toFixed(2)}`}
                   </Modal.Title>
                 </div>
               </div>
@@ -160,7 +161,7 @@ const DialogModal = (props) => {
           </Modal.Footer>
         </Modal>
       )}
-      {(props.datas.item.length === 0 || props.error) && (
+      {(props.items.length === 0 || props.error) && (
         <Modal
           centered
           show={props.show || props.error}

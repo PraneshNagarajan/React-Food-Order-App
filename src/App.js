@@ -5,10 +5,15 @@ import HomePage from './Pages/HomePage'
 import LoginPage from './Pages/LoginPage'
 import { Fragment } from "react";
 import {useSelector} from "react-redux";
-import {store} from './store/index'
+
 function App() {
-  const loginStatus = useSelector(state => state.isLogged)
-  console.log(loginStatus)
+  //Redux
+  //-------------
+  //const loginStatus = useSelector(state => state.isLogged)
+
+  //redux-toolkit
+  //---------------
+  const loginStatus = useSelector(state => state.auth.isLogged)
   return (
     // If you pass dynamic value to components then only <Context.provider>. Otherwise there is no need.
     //-------------------------------------------------------------------------------------------------
@@ -27,8 +32,6 @@ function App() {
       //   }]}>
       //   <HomePage/>
       // </ItemsContext.Provider>
-
-
       <Fragment>
        {!loginStatus && <LoginPage/>}
         {loginStatus && <HomePage/>}

@@ -4,10 +4,12 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
-import store from './store/index'
+import storeRedux from './store/redux/index'
+import storeReduxToolkit from './store/redux-toolkit/index'
 
 ReactDOM.render(
-  <Provider store={store} ><App /></Provider>
+  // <Provider store={storeRedux} ><App /></Provider>
+  <Provider store={storeReduxToolkit}><App/></Provider>
     ,
   document.getElementById('root')
 );

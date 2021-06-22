@@ -7,19 +7,36 @@ import {
   Col,
 } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import { AuthActions } from "../store/redux-toolkit/loginRedux";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
-  const error = useSelector(state => state.errorMsg)
+  //redux
+  //---------
+  // const error = useSelector(state => state.errorMsg)
+
+  //Redux-toolkit
+  //---------------
+  const error = useSelector(state => state.auth.errorMsg)
   const submitHandler = (event) => {
     event.preventDefault();
-    dispatch({
-      type: "login",
-      payload: {
+    // redux
+    //-------------
+    // dispatch({
+    //   type: "login",
+    //   payload: {
+    //     username: event.target.username.value,
+    //     password: event.target.password.value,
+    //   },
+    // });
+
+
+    // redux-toolkit
+    //-----------------
+      dispatch(AuthActions.login({
         username: event.target.username.value,
-        password: event.target.password.value,
-      },
-    });
+        password: event.target.password.value
+      }))
   };
   return (
     <Form onSubmit={submitHandler} className="d-flex justify-content-center mt-5 p-5">
