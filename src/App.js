@@ -2,7 +2,13 @@ import logo from "./logo.svg";
 import "./App.css";
 import 'bootstrap/dist/css/bootstrap.min.css'
 import HomePage from './Pages/HomePage'
+import LoginPage from './Pages/LoginPage'
+import { Fragment } from "react";
+import {useSelector} from "react-redux";
+import {store} from './store/index'
 function App() {
+  const loginStatus = useSelector(state => state.isLogged)
+  console.log(loginStatus)
   return (
     // If you pass dynamic value to components then only <Context.provider>. Otherwise there is no need.
     //-------------------------------------------------------------------------------------------------
@@ -23,9 +29,10 @@ function App() {
       // </ItemsContext.Provider>
 
 
-      <div>
-        <HomePage/>
-      </div>
+      <Fragment>
+       {!loginStatus && <LoginPage/>}
+        {loginStatus && <HomePage/>}
+      </Fragment>
     );
 }
 

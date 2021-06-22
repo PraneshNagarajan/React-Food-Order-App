@@ -2,9 +2,15 @@ import { Navbar, Badge, Container, Nav, Button, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartPlus, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 const NavBar = (props) => {
+  const dispatch = useDispatch()
   const [cartSize, setSize] = useState(0);
+  
+  const logoutHandler = () =>{
+    dispatch({type: 'logout'})
+  }
 
   useEffect(() => {
     let size = props.items.reduce((prev, current) => {
@@ -73,8 +79,8 @@ const NavBar = (props) => {
               </Button>
             </Nav.Item>
             <Nav.Item className="m-1">
-              <Button className="w-100" variant="outline-light">
-                Logout <FontAwesomeIcon icon={faSignOutAlt}></FontAwesomeIcon>
+              <Button className="w-100" variant="outline-light" onClick={logoutHandler}>
+                Logout <FontAwesomeIcon icon={faSignOutAlt} ></FontAwesomeIcon>
               </Button>
             </Nav.Item>
           </Nav>
