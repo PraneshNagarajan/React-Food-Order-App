@@ -1,0 +1,32 @@
+useMemo:
+----------------------------
+1)  it doesn't re-evaluate the function if state(variable) has changed.
+  useMemo(()=>{
+	},[])  
+  
+2)  if you want re-evulate based on some state change or props.
+
+
+    useMemo(()=>{
+	},[props.item])
+	
+	
+useCallback
+----------------------------
+1)  it doesn't re-create the function if state(variable) has changed. so it's reference memory or pointer address remain same.
+
+     note:
+	 ------
+	 
+	   when compare same value of two objects, array, function same beacuse it would be compare based on their reference address.
+	   
+  useCallback(()=>{
+	},[])  
+  
+2)  if you want re-create based on some state change or props.
+
+
+    usecallback(()=>{
+	},[props.item])
+	
+	__________________________________________________________________________________________________________________________________________________________

@@ -1,0 +1,72 @@
+Redux is alternate use of useContext
+--------------------------------------
+Disadvantage of useContext:
+-------------------------------
+             1) i) it's very hard to maintain and manage complex state.
+			 
+						<AllProvider>
+							<App/>
+						</AllProvider>
+			 
+			            (or)
+				ii) we can split state state and manage. but it looks like
+				
+				<AuthProvider value={}>
+					<ItemProvider value = {}>
+						<...Provider value ={}>
+							<App/>
+						<./..Provider>
+					</ItemProvider>
+				</AuthProvider>
+				
+			 2) it's not suitable frequently update the state.
+			 
+
+__________________________________________________________________________________________________________________
+
+Redux
+--------
+Redux is used for component and App wide state management
+ Rules:
+   - must be one cental store or state
+   
+   - Redux also has same issue like useContext. but there is a solution to handle.
+                 - Redux-toolkit.
+   
+Advantage- Redux_ToolKit
+--------------------------
+
+		1) one central state.
+		2) we split the state and then combine . so it acts as single state but internally we split into slice state.
+		
+
+_____________________________________________________________________________________________________________________________
+
+ reducer function must be 
+-----------------------------
+ i) pure functionc - 
+             - Not depends an external variable
+             - return same ouput from same inputs
+                        - Math.sqrt(2) = 4
+ ii) No side -effects:
+             - doesn't change external value of variable, state.....
+ iii) No asynchrous
+ Imp-Rules:
+ ----------
+      No mutate/change previous or existing state instead we just return overirde exsisiting state
+	
+wrong:(don't do this)
+------------------------
+	  const reducer = (state = {counter: 0, flag: false}, action) = {
+	   return state.counter++
+	  }
+	  // if u do this flag property gone and only counter property only exist
+	  
+right:
+--------
+return {counter : state.counter, flag: false}
+
+
+_________________________________________________________________________________________________________________________
+
+
