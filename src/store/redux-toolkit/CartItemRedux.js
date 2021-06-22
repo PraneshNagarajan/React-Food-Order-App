@@ -14,14 +14,17 @@ const CartItemSlice = createSlice({
   reducers: {
     addItems(state, action) {
       index = state.item.findIndex((item) => item.id === action.payload.id);
-      existingItems = state.item[index];
+      existingItems = state.item[index]; // refrence same memory location
       if (index > -1) {
-        state.item[index] = {
-          ...existingItems,
-          amount:
-            existingItems.amount + existingItems.price * action.payload.size,
-          size: existingItems.size + action.payload.size,
-        };
+        // state.item[index] = {
+        //   ...existingItems,
+        //   amount:
+        //     existingItems.amount + existingItems.price * action.payload.size,
+        //   size: existingItems.size + action.payload.size,
+        // };
+
+        existingItems.amount = existingItems.price * action.payload.size; 
+        existingItems.size += action.payload.size;
       } else {
         state.item.push({
           ...action.payload,
@@ -34,22 +37,23 @@ const CartItemSlice = createSlice({
     },
     removeItems(state, action) {
       index = state.item.findIndex((item) => item.id === action.payload.id);
-      existingItems = state.item[index];
-      console.log(state.total)
+      existingItems = state.item[index]; // refrence same memory location
       if (existingItems.size > 1) {
-        state.item[index] = {
-          ...existingItems,
-          amount:
-            existingItems.amount - existingItems.price * action.payload.size,
-          size: existingItems.size - action.payload.size,
-        };
+        // state.item[index] = {
+        //   ...existingItems,
+        //   amount:
+        //     existingItems.amount - existingItems.price * action.payload.size,
+        //   size: existingItems.size - action.payload.size,
+        // };
+       
+        existingItems.size--;
+        existingItems.amount -= existingItems.price;
       } else {
         state.item.pop(index);
       }
       state.total = state.item.reduce((prev, current) => {
         return prev + current.amount;
       }, 0);
-      console.log(state.total)
     },
   },
 });
