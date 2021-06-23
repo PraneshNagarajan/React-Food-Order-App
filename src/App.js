@@ -31,7 +31,9 @@ function App() {
         method: "GET",
       },
       (data) => {
-        dispatch(CartItemActions.replaceItems(data.item || [] ));
+        dispatch(CartItemActions.replaceItems({
+          item : data.item || []
+        }));
       }
     );
   }, []);
