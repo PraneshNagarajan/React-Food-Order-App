@@ -1,13 +1,23 @@
 import { useState } from "react";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { NotificationActions } from "../store/redux-toolkit/NotificationRedux";
 
 const useHttp = () => {
-  const [response, setResponse] = useState();
+  const dispatch = useDispatch();
   const [error, setError] = useState([]);
 
   const request = (requestConfig, fetchData) => {
+    if (requestConfig.cart) {
+      dispatch(
+        NotificationActions.fetchNotifications({
+          status: "Sending",
+          flag: true,
+          bg: "info",
+        })
+      );
+    }
     setError([]);
-    let data = [];
     setTimeout(() => {
       axios({
         url: requestConfig.url,
@@ -15,19 +25,32 @@ const useHttp = () => {
         data: requestConfig.body ? requestConfig.body : null,
       })
         .then((response) => {
-          setResponse(response);
-          if (requestConfig.method === "GET") {
-            if ([response.data].length > 0 ){
-              for (let item in response.data) {
-                data.push(response.data[item]);
-              }
-            }
+          fetchData(response.data);
+          if (requestConfig.cart) {
+            dispatch(
+              NotificationActions.fetchNotifications({
+                status: "Success",
+                flag: true,
+                bg: "success",
+              })
+            );
+            setTimeout(() => {
+              dispatch(NotificationActions.fetchNotifications({ flag: false }));
+            }, 1000);
           }
-          fetchData(data);
         })
         .catch((error) => {
-          setResponse(error);
-          setError(error.response.data.error);
+          setError(error.message);
+          if (requestConfig.cart) {
+            dispatch(
+              NotificationActions.fetchNotifications({
+                status: "Failed",
+                error: error.message,
+                bg: "danger",
+                flag: true,
+              })
+            );
+          }
         });
     }, 3000);
   };

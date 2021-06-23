@@ -1,33 +1,68 @@
-import logo from "./logo.svg";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { Fragment, useEffect } from "react";
+import useHttp from "./Hooks/http-hook";
 import HomePage from "./Pages/HomePage";
 import LoginPage from "./Pages/LoginPage";
-import { Fragment } from "react";
+import Notification from "./Components/Notification";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { fetchCartData, sendCartData } from "./store/redux-toolkit/CartItemThunk";
-import Notification from "./Components/Notification"
-let flag = true
+import { CartItemActions } from "./store/redux-toolkit/CartItemRedux";
+//import { fetchCartData, sendCartData } from "./store/redux-toolkit/CartItemThunk";
+
+let flag = true;
+
 function App() {
-const dispatch = useDispatch()
-const cartItems  = useSelector(state => state.cartItems)
-const changed = useSelector(state => state.cartItems.changed)
+  const dispatch = useDispatch();
+  const http = useHttp();
+  const cartItems = useSelector((state) => state.cartItems);
+  const changed = useSelector((state) => state.cartItems.changed);
 
-useEffect(() => {
-dispatch(fetchCartData())
-},[])
+  useEffect(() => {
+    //Redux-thunk using 'action-creator' in toolkit
+    //---------------------------------------------
+    //dispatch(fetchCartData())
 
-useEffect(()=>{
-  if(flag){
-    flag=false;
-    return
-  }   // prevent from initial call
-  if(changed){   // prevent infinity loop fetchcartData() call cartItems would change so, 'changed' get true. 
-    dispatch(sendCartData(cartItems))
-  }
-},[cartItems])
+    //Redux-thunk using components in toolkit
+    //---------------------------------------
 
+    http.request(
+      {
+        url: "https://react-shop-82e08-default-rtdb.firebaseio.com/cartItems.json",
+        method: "GET",
+      },
+      (data) => {
+        dispatch(CartItemActions.replaceItems(data.item || [] ));
+      }
+    );
+  }, []);
+
+  useEffect(() => {
+    // prevent from initial call
+    if (flag) {
+      flag = false;
+      return;
+    }
+    if (changed) {
+      // prevent infinity loop fetchcartData() call cartItems would change so, 'changed' get true.
+      //Redux-thunk using 'action-creator' in toolkit
+      //---------------------------------------------
+      //dispatch(sendCartData(cartItems))
+
+      //Redux-thunk using components in toolkit
+      //---------------------------------------
+      http.request(
+        {
+          url: "https://react-shop-82e08-default-rtdb.firebaseio.com/cartItems.json",
+          method: "PUT",
+          body: { item: cartItems.item, total: cartItems.total },
+          cart: true,
+        },
+        () => {}
+      );
+    }
+  }, [cartItems]);
+
+  //_____________________________________________________________________________________
   //Redux
   //-------------
   //const loginStatus = useSelector(state => state.isLogged)
@@ -35,6 +70,8 @@ useEffect(()=>{
   //redux-toolkit
   //---------------
   const loginStatus = useSelector((state) => state.auth.isLogged);
+  //________________________________________________________________________________________
+
   return (
     // If you pass dynamic value to components then only <Context.provider>. Otherwise there is no need.
     //-------------------------------------------------------------------------------------------------

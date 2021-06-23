@@ -18,25 +18,37 @@ export const fetchCartData = () => {
 
 export const sendCartData = (data) => {
   return (dispatch) => {
-    dispatch(NotificationActions.fetchNotifications({ status: "Sending" , flag: true, bg:"info"}));
+    dispatch(
+      NotificationActions.fetchNotifications({
+        status: "Sending",
+        flag: true,
+        bg: "info",
+      })
+    );
     axios({
       url: "https://react-shop-82e08-default-rtdb.firebaseio.com/cartItems.json",
       method: "put",
       data: { item: data.item, total: data.total },
     })
       .then((response) => {
-        dispatch(NotificationActions.fetchNotifications({ status: "Success", flag:true, bg:"success"}));
-       setTimeout(()=>{
-        dispatch(NotificationActions.fetchNotifications({flag: false}))
-       },1000)
+        dispatch(
+          NotificationActions.fetchNotifications({
+            status: "Success",
+            flag: true,
+            bg: "success",
+          })
+        );
+        setTimeout(() => {
+          dispatch(NotificationActions.fetchNotifications({ flag: false }));
+        }, 1000);
       })
       .catch((error) => {
         dispatch(
           NotificationActions.fetchNotifications({
             status: "Failed",
             error: error.response.data.error,
-            bg: 'danger',
-            flag: true
+            bg: "danger",
+            flag: true,
           })
         );
       });

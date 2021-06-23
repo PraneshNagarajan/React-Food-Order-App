@@ -1,4 +1,3 @@
-// import './MealsItem.css'
 import { useState } from "react";
 import { Card, FormControl, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,7 +7,6 @@ import Spinners from "../../Components/Spinner";
 const MealsItem = (props) => {
   const [size, setSize] = useState(0);
   const itemcxt = props.value;
-
   const getItemSizeHandler = (event) => {
     setSize(+event.target.value);
   };

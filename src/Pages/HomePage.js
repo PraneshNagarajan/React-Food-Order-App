@@ -84,7 +84,7 @@ const HomePage = () => {
   useEffect(() => {
     httpRequest(
       {
-        url: "https://react-shop-82e08-default-rtdb.firebaseio.com/items.json",
+        url: "https://react-shop-82e08-default-rtdb.firebaseio.com/ItemList.json",
         method: "GET",
       },
       getData
