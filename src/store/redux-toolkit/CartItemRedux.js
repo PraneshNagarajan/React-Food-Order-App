@@ -3,6 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialValues = {
   item: [],
   total: 0,
+  
+  changed: false
 };
 
 let existingItems;
@@ -12,7 +14,7 @@ const CartItemSlice = createSlice({
   name: "cart-items",
   initialState: initialValues,
   reducers: {
-    addItems(state, action) {
+    addItems(state, action) { 
       index = state.item.findIndex((item) => item.id === action.payload.id);
       existingItems = state.item[index]; // refrence same memory location
       if (index > -1) {
@@ -22,9 +24,9 @@ const CartItemSlice = createSlice({
         //     existingItems.amount + existingItems.price * action.payload.size,
         //   size: existingItems.size + action.payload.size,
         // };
-
-        existingItems.amount = existingItems.price * action.payload.size; 
         existingItems.size += action.payload.size;
+        existingItems.amount = existingItems.price * existingItems.size; 
+        state.changed = true
       } else {
         state.item.push({
           ...action.payload,
@@ -54,8 +56,13 @@ const CartItemSlice = createSlice({
       state.total = state.item.reduce((prev, current) => {
         return prev + current.amount;
       }, 0);
+      state.changed = true
     },
-  },
+    replaceItems(state,action) {
+        state.item = action.payload.item;
+        state.total = action.payload.total;
+    },
+  }
 });
 
 export const CartItemActions = CartItemSlice.actions;

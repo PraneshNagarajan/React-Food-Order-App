@@ -12,6 +12,7 @@ const NavBar = (props) => {
     dispatch({type: 'logout'})
   }
 
+
   useEffect(() => {
     let size = props.items.reduce((prev, current) => {
       return prev + current.size;
@@ -20,8 +21,8 @@ const NavBar = (props) => {
   }, [props.items]);
 
   return (
-    <Navbar
-      fixed="top"
+       <Navbar
+      sticky= "top"
       collapseOnSelect
       bg="primary"
       variant="dark"
@@ -87,6 +88,6 @@ const NavBar = (props) => {
         </Navbar.Collapse>
       </Container>
     </Navbar>
-  );
+   );
 };
 export default NavBar;

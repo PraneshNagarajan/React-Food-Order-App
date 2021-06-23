@@ -17,10 +17,11 @@ import useHttp from "../Hooks/http-hook";
 import { Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {CartItemActions} from '../store/redux-toolkit/CartItemRedux'
-const defaultCartItems = {
-  item: [],
-  total: 0,
-};
+
+// const defaultCartItems = {
+//   item: [],
+//   total: 0,
+// };
 
 // const cartReducer = (state, action) => {
 //   let updatedItems;
@@ -76,10 +77,9 @@ const defaultCartItems = {
 const HomePage = () => {
   const dispatch = useDispatch()
   const cartItems = useSelector(state => state.cartItems.item)
-  console.log(cartItems.length)
   const [isShow, setShow] = useState(false);
   const [items, setItems] = useState([]);
-  const { request: httpRequest, error: httpError, isLoading } = useHttp();
+  const { request: httpRequest, error: httpError} = useHttp();
 
   useEffect(() => {
     httpRequest(

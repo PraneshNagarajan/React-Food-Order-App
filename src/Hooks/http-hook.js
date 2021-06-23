@@ -17,15 +17,17 @@ const useHttp = () => {
         .then((response) => {
           setResponse(response);
           if (requestConfig.method === "GET") {
-            for (let item in response.data) {
-              data.push(response.data[item]);
+            if ([response.data].length > 0 ){
+              for (let item in response.data) {
+                data.push(response.data[item]);
+              }
             }
           }
           fetchData(data);
         })
         .catch((error) => {
           setResponse(error);
-          setError(error.response.status + " : " + error.response.statusText);
+          setError(error.response.data.error);
         });
     }, 3000);
   };
