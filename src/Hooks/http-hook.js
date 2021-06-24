@@ -36,7 +36,7 @@ const useHttp = () => {
             );
             setTimeout(() => {
               dispatch(NotificationActions.fetchNotifications({ flag: false }));
-            }, 1000);
+            }, 300);
           }
         })
         .catch((error) => {

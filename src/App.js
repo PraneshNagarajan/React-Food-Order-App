@@ -1,11 +1,11 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Fragment, useEffect } from "react";
-import { Route, Switch,Redirect } from "react-router-dom";
+import { useEffect, Fragment } from "react";
+import { Route, Switch, Redirect, useLocation, Router } from "react-router-dom";
 import useHttp from "./Hooks/http-hook";
 import HomePage from "./Pages/HomePage";
 import LoginPage from "./Pages/LoginPage";
-import Notification from "./Components/Notification";
+import AboutPage from "./Pages/AboutPage";
 import { useDispatch, useSelector } from "react-redux";
 import { CartItemActions } from "./store/redux-toolkit/CartItemRedux";
 //import { fetchCartData, sendCartData } from "./store/redux-toolkit/CartItemThunk";
@@ -13,11 +13,11 @@ import { CartItemActions } from "./store/redux-toolkit/CartItemRedux";
 let flag = true;
 
 function App() {
+  const location = useLocation();
   const dispatch = useDispatch();
   const http = useHttp();
   const cartItems = useSelector((state) => state.cartItems);
   const changed = useSelector((state) => state.cartItems.changed);
-
   useEffect(() => {
     //Redux-thunk using 'action-creator' in toolkit
     //---------------------------------------------
@@ -35,6 +35,7 @@ function App() {
         dispatch(
           CartItemActions.replaceItems({
             item: data.item || [],
+            total: data.total,
           })
         );
       }
@@ -95,9 +96,9 @@ function App() {
     //   }]}>
     //   <HomePage/>
     // </ItemsContext.Provider>
-  
-      <Switch>  
-      {/*  Switch excutes one Route on top-down approach.
+    <Fragment>
+      <Switch>
+        {/*  Switch excutes one Route on top-down approach.
       (eg)
       ------
       if you want to route 'product page', but '/Product/:1' is match first also it routes to that url instaed of '/product'.
@@ -113,15 +114,19 @@ function App() {
                  <Route to="/product" ><Product-Component></Route>
       */}
         <Route path="/" exact>
-        <Redirect to="/loginPage"></Redirect>
+          <Redirect to="/loginPage"></Redirect>
         </Route>
         <Route path="/loginPage">
           <LoginPage />
         </Route>
         <Route path="/homePage">
-          <HomePage />
+          <HomePage items={cartItems.item} />
+        </Route>
+        <Route path="/aboutPage">
+          <AboutPage items={cartItems.item} />
         </Route>
       </Switch>
+    </Fragment>
   );
 }
 

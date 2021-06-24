@@ -1,24 +1,47 @@
-import { useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Card, FormControl, Button } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import useHttp from "../../Hooks/http-hook";
+import Spinners from "../../Components/Spinner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
-import Spinners from "../../Components/Spinner";
+import { CartItemActions } from "../../store/redux-toolkit/CartItemRedux";
 
-const MealsItem = (props) => {
+const MealsItem = () => {
   const [size, setSize] = useState(0);
-  const itemcxt = props.value;
+  const [items, setItems] = useState([]);
+  const { request: httpRequest, error: httpError } = useHttp();
+  const dispatch = useDispatch();
+
+  const onAddCartItemsHandler = (item) => {
+    //setCartDispatcher({ type: "ADD", item: item });
+    dispatch(CartItemActions.addItems(item));
+  };
+
   const getItemSizeHandler = (event) => {
     setSize(+event.target.value);
   };
+
+  useEffect(() => {
+    httpRequest(
+      {
+        url: "https://react-shop-82e08-default-rtdb.firebaseio.com/ItemList.json",
+        method: "GET",
+      },
+      getData
+    );
+  }, []);
+
+  const getData = useCallback((response) => {
+    setItems(response.length > 0 ? response : []);
+  });
 
   return (
     <div className="cart-item p-5 my-5">
       <Card>
         <Card.Body className="scroll">
-          {itemcxt.items.length === 0 && (
-            <Spinners type="spinner-style-1"></Spinners>
-          )}
-          {itemcxt.items.map((food, index) => {
+          {items.length === 0 && <Spinners type="spinner-style-1"></Spinners>}
+          {items.map((food, index) => {
             return (
               <div key={index}>
                 <div className="d-flex justify-content-between">
@@ -46,7 +69,11 @@ const MealsItem = (props) => {
                       <Button
                         variant="primary"
                         onClick={() =>
-                          itemcxt.addCart({ id: index, ...food, size: size })
+                          onAddCartItemsHandler({
+                            id: index,
+                            ...food,
+                            size: size,
+                          })
                         }
                       >
                         <FontAwesomeIcon icon={faCartPlus}></FontAwesomeIcon>{" "}
@@ -59,6 +86,7 @@ const MealsItem = (props) => {
               </div>
             );
           })}
+          {httpError.length > 0 && <h5 className="text-danger">{httpError}</h5>}
         </Card.Body>
       </Card>
     </div>

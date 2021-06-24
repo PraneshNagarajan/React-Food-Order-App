@@ -1,6 +1,8 @@
-import { useContext, useState } from "react";
-import ItemContext from "../../Datas/Item-contex";
-import SuccessModal from "./SuccessModal";
+import { useState, Fragment } from "react";
+import useHttp from "../../Hooks/http-hook";
+import { CartItemActions } from "../../store/redux-toolkit/CartItemRedux";
+import { CartToggleActions } from "../../store/redux-toolkit/cartToggleRedux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Badge,
   Modal,
@@ -10,29 +12,41 @@ import {
   Col,
   Button,
 } from "react-bootstrap";
-import CustomerInfo from "../Forms/CustomerInfoForm";
-import { Fragment } from "react";
-import useHttp from "../../Hooks/http-hook";
+import SuccessModal from "./SuccessModal";
 import Spinners from "../../Components/Spinner";
-import { useSelector } from "react-redux";
+import CustomerInfo from "../Forms/CustomerInfoForm";
 
 const DialogModal = (props) => {
   const http = useHttp();
-  const ItemCxt = useContext(ItemContext);
-  const [show, setShow] = useState(false);
-  const [isPlaced, setPlaced] = useState(false);
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cartItems.item);
+  const total = useSelector((state) => state.cartItems.total);
+  const show = useSelector((state) => state.cartToggle.cart.show);
   const [isDisabled, setIsDisabled] = useState(true);
   const [customerInfo, setCustomerInfo] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const total = useSelector(state => state.cartItems.total)
+
+  const onAddCartItemsHandler = (item) => {
+    //setCartDispatcher({ type: "ADD", item: item });
+    dispatch(CartItemActions.addItems(item));
+  };
+
+  const onRemoveCartItemsHandler = (item) => {
+    //setCartDispatcher({ type: "REMOVE", item: item });
+    dispatch(CartItemActions.removeItems(item));
+  };
+
   const getDataHandler = (formStatus, customerData) => {
     setIsDisabled(formStatus);
     setCustomerInfo(customerData);
   };
 
-  const onShowModalHandler = () => {
-    setShow(!show);
-    setPlaced(!isPlaced);
+  const cartToggleHandler = () => {
+    dispatch(CartToggleActions.cartToggle());
+  };
+
+  const modalToggleHandler = () => {
+    dispatch(CartToggleActions.modalToggle());
   };
 
   const onPlacedOrderHandler = () => {
@@ -48,20 +62,19 @@ const DialogModal = (props) => {
       },
       () => {
         setIsLoading(false);
-        props.showFunction();
-        setShow(!show);
-        setPlaced(!isPlaced);
+        cartToggleHandler();
+        modalToggleHandler();
       }
     );
   };
 
   return (
     <Fragment>
-      {props.items.length > 0 && (
+      {cartItems.length > 0 && (
         <Modal
           centered
-          show={props.show}
-          onHide={props.showFunction}
+          show={show}
+          onHide={cartToggleHandler}
           keyboard={false}
           backdrop="static"
         >
@@ -71,7 +84,7 @@ const DialogModal = (props) => {
           <Modal.Body>
             {!isLoading && (
               <div>
-                {props.items.map((food, index) => {
+                {cartItems.map((food, index) => {
                   return (
                     // no nested loop might be affect performance. so use Fragment from single root wrapper .this will effect in DOM
                     <Fragment key={index}>
@@ -98,7 +111,7 @@ const DialogModal = (props) => {
                                 size="sm"
                                 variant="success"
                                 onClick={(e) =>
-                                  ItemCxt.addCart({ ...food, size: 1 })
+                                  onAddCartItemsHandler({ ...food, size: 1 })
                                 }
                               >
                                 +
@@ -110,7 +123,7 @@ const DialogModal = (props) => {
                                 size="sm"
                                 variant="danger"
                                 onClick={(e) =>
-                                  ItemCxt.removeCart({ ...food, size: 1 })
+                                  onRemoveCartItemsHandler({ ...food, size: 1 })
                                 }
                               >
                                 -
@@ -155,33 +168,27 @@ const DialogModal = (props) => {
             >
               Place the order
             </Button>
-            <Button variant="danger" onClick={props.showFunction}>
+            <Button variant="danger" onClick={cartToggleHandler}>
               Close
             </Button>
           </Modal.Footer>
         </Modal>
       )}
-      {(props.items.length === 0 || props.error) && (
+      {cartItems.length === 0 && (
         <Modal
           centered
-          show={props.show || props.error}
+          show={show}
           backdrop="static"
           keyboard={false}
-          onHide={props.showFunction}
+          onHide={cartToggleHandler}
         >
           <Modal.Header></Modal.Header>
-          <Modal.Body
-            className={props.show ? `d-flex justify-content-between` : ``}
-          >
-            <h5
-              className={`text-center ${
-                !props.show ? `text-danger font-bold` : `text-muted`
-              }`}
-            >
-              {!props.show ? props.error : "No Items......"}
+          <Modal.Body className="d-flex justify-content-between">
+            <h5 className="text-center text-danger font-bold text-muted">
+              {"No Items......"}
             </h5>
-            {props.show && (
-              <Button variant="danger" onClick={props.showFunction}>
+            {show && (
+              <Button variant="danger" onClick={cartToggleHandler}>
                 Close
               </Button>
             )}
@@ -189,9 +196,7 @@ const DialogModal = (props) => {
           <Modal.Footer></Modal.Footer>
         </Modal>
       )}
-      {isPlaced && (
-        <SuccessModal showFunction={onShowModalHandler} show={show} />
-      )}
+      <SuccessModal />
     </Fragment>
   );
 };

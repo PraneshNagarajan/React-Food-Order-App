@@ -1,11 +1,19 @@
 import { useContext } from "react";
 import { Modal, Button } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
 import ItemContex from '../../Datas/Item-contex'
+import {CartToggleActions} from '../../store/redux-toolkit/cartToggleRedux'
 
 const SuccessModal = (props) => {
   const itemCxt = useContext(ItemContex)
+  const show = useSelector(state => state.cartToggle.modal.show)
+  const dispatch = useDispatch()
+  const onShowModalHandler = () => {
+    dispatch(CartToggleActions.modalToggle())
+  };
+
   return (
-    <Modal show={props.show} onHide={(e) => props.showFunction()}>
+    <Modal show={show} onHide={onShowModalHandler}>
       <Modal.Header closeButton>
         <h3>
           Order status : <span className="text-success">Success</span>
