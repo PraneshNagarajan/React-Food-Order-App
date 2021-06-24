@@ -1,6 +1,7 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Fragment, useEffect } from "react";
+import { Route, Switch,Redirect } from "react-router-dom";
 import useHttp from "./Hooks/http-hook";
 import HomePage from "./Pages/HomePage";
 import LoginPage from "./Pages/LoginPage";
@@ -31,9 +32,11 @@ function App() {
         method: "GET",
       },
       (data) => {
-        dispatch(CartItemActions.replaceItems({
-          item : data.item || []
-        }));
+        dispatch(
+          CartItemActions.replaceItems({
+            item: data.item || [],
+          })
+        );
       }
     );
   }, []);
@@ -92,11 +95,33 @@ function App() {
     //   }]}>
     //   <HomePage/>
     // </ItemsContext.Provider>
-    <Fragment>
-      <Notification></Notification>
-      {!loginStatus && <LoginPage />}
-      {loginStatus && <HomePage />}
-    </Fragment>
+  
+      <Switch>  
+      {/*  Switch excutes one Route on top-down approach.
+      (eg)
+      ------
+      if you want to route 'product page', but '/Product/:1' is match first also it routes to that url instaed of '/product'.
+      beacuse '/product' - static, '/:1'- dynamic
+                 <Route to="/product/:1"><Component></Route>
+                 <Route to="/product" ><Product-Component></Route>
+      if u want to avoid:
+      --------------------
+                1) write dynamic route first - without <Switch>
+                2) use prop 'exact' in <Route > with <Switch>
+
+                <Route to="/product/:1" exact ><Component></Route>
+                 <Route to="/product" ><Product-Component></Route>
+      */}
+        <Route path="/" exact>
+        <Redirect to="/loginPage"></Redirect>
+        </Route>
+        <Route path="/loginPage">
+          <LoginPage />
+        </Route>
+        <Route path="/homePage">
+          <HomePage />
+        </Route>
+      </Switch>
   );
 }
 

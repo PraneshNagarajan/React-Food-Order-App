@@ -1,17 +1,21 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { Provider } from 'react-redux';
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { Provider } from "react-redux";
 //import storeRedux from './store/redux/index'
-import storeReduxToolkit from './store/redux-toolkit/index'
+import { BrowserRouter } from "react-router-dom";
+import storeReduxToolkit from "./store/redux-toolkit/index";
 
 ReactDOM.render(
   // <Provider store={storeRedux} ><App /></Provider>
-  <Provider store={storeReduxToolkit}><App/></Provider>
-    ,
-  document.getElementById('root')
+  <BrowserRouter>
+    <Provider store={storeReduxToolkit}>
+      <App />
+    </Provider>
+  </BrowserRouter>,
+  document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function
