@@ -67,9 +67,6 @@ import { Fragment } from "react";
 const HomePage = (props) => {
   return (
     <Fragment>
-      <Notification />
-      <NavBar items={props.items} />
-      <DialogModal />
       <Card>
         <Card.Img src={mealsImage}></Card.Img>
       </Card>

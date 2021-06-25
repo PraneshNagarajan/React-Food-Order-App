@@ -1,13 +1,14 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useEffect, Fragment } from "react";
-import { Route, Switch, Redirect, useLocation, Router } from "react-router-dom";
+import { useEffect } from "react";
+import { Route, Switch, Redirect, useLocation } from "react-router-dom";
 import useHttp from "./Hooks/http-hook";
 import HomePage from "./Pages/HomePage";
 import LoginPage from "./Pages/LoginPage";
 import AboutPage from "./Pages/AboutPage";
 import { useDispatch, useSelector } from "react-redux";
 import { CartItemActions } from "./store/redux-toolkit/CartItemRedux";
+import Layout from "./Components/Layout";
 //import { fetchCartData, sendCartData } from "./store/redux-toolkit/CartItemThunk";
 
 let flag = true;
@@ -96,9 +97,9 @@ function App() {
     //   }]}>
     //   <HomePage/>
     // </ItemsContext.Provider>
-    <Fragment>
-      <Switch>
-        {/*  Switch excutes one Route on top-down approach.
+
+    <Switch>
+      {/*  Switch excutes one Route on top-down approach.
       (eg)
       ------
       if you want to route 'product page', but '/Product/:1' is match first also it routes to that url instaed of '/product'.
@@ -113,20 +114,21 @@ function App() {
                 <Route to="/product/:1" exact ><Component></Route>
                  <Route to="/product" ><Product-Component></Route>
       */}
-        <Route path="/" exact>
-          <Redirect to="/loginPage"></Redirect>
-        </Route>
-        <Route path="/loginPage">
-          <LoginPage />
-        </Route>
+      <Route path="/" exact>
+        <Redirect to="/loginPage"></Redirect>
+      </Route>
+      <Route path="/loginPage">
+        <LoginPage />
+      </Route>
+      <Layout items={cartItems.item}>
         <Route path="/homePage">
           <HomePage items={cartItems.item} />
         </Route>
         <Route path="/aboutPage">
           <AboutPage items={cartItems.item} />
         </Route>
-      </Switch>
-    </Fragment>
+      </Layout>
+    </Switch>
   );
 }
 
