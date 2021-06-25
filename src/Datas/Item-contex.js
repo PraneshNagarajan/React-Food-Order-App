@@ -1,36 +1,33 @@
 import React from 'react'
+import { useState } from 'react'
 
 const ItemContext = React.createContext({
-items: [{
-    item: 'Sashi',
-    price: 25,
-    about: 'Finest fish and veggie',
-    type: 'Non-veg'
-},
-{
-    item: 'Schnitzel',
-    price: 16.50,
-    about: 'A german speciality!',
-    type: 'veg'
-},
-{
-    item: 'Barbeque Burger',
-    price: 19.99,
-    about: 'American, raw, meaty',
-    type: 'Non-veg'
-},
-{
-    item: 'Green Bowl',
-    price: 18.99,
-    about: 'Healthy..and..greeny',
-    type: 'veg'
-}
-],
+items: [],
 addCart: () => {},
 removeCart : () =>{},
 clearCart : () => {}
 }
     
 )
+
+//create a wrapper function for context here also
+
+export const ItemContextProvider = () => {
+    const [items, setItems] = useState([])
+    const onAddCartHandler = (data) => {
+        //code
+    }
+    const onRemoveCartHandler = (data) => {
+        //code
+    }
+
+    const CartValue = {
+        items,
+        addCart: onAddCartHandler,
+        removeCart: onRemoveCartHandler
+    }
+
+    return <ItemContext.Provider value={CartValue}>{props.children}</ItemContext.Provider>
+}
 
 export default ItemContext
