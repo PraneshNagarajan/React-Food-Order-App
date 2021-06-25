@@ -1,15 +1,23 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useEffect } from "react";
+import { useEffect , lazy, Suspense} from "react";
 import { Route, Switch, Redirect, useLocation } from "react-router-dom";
 import useHttp from "./Hooks/http-hook";
-import HomePage from "./Pages/HomePage";
-import LoginPage from "./Pages/LoginPage";
-import AboutPage from "./Pages/AboutPage";
 import { useDispatch, useSelector } from "react-redux";
 import { CartItemActions } from "./store/redux-toolkit/CartItemRedux";
 import Layout from "./Components/Layout";
+import Spinner from './Components/Spinner'
 //import { fetchCartData, sendCartData } from "./store/redux-toolkit/CartItemThunk";
+
+
+//__________________________________________________________________
+//Lazy-loading:
+//-------------------------
+//lazy-loading increase the performance of application. the component will download when move or visit the page instead download all components.
+// so it bundle size will reduce and ramp down download time.
+const LoginPage = lazy(() => import("./Pages/LoginPage"))
+const HomePage = lazy(() => import("./Pages/HomePage"))
+const AboutPage = lazy(() => import("./Pages/HomePage"))
 
 let flag = true;
 
@@ -98,7 +106,11 @@ function App() {
     //   <HomePage/>
     // </ItemsContext.Provider>
 
-    <Switch>
+    
+<Suspense fallback={<Spinner type="spinner-style-2" />}>
+{/* lazy-loading will take some time download untill 'suspense' will manage with some other actions with jsx code. */}
+
+<Switch>
       {/*  Switch excutes one Route on top-down approach.
       (eg)
       ------
@@ -129,6 +141,8 @@ function App() {
         </Route>
       </Layout>
     </Switch>
+ 
+</Suspense>
   );
 }
 
