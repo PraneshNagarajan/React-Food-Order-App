@@ -12,7 +12,7 @@ clearCart : () => {}
 
 //create a wrapper function for context here also
 
-export const ItemContextProvider = () => {
+export const ItemContextProvider = (props) => {
     const [items, setItems] = useState([])
     const onAddCartHandler = (data) => {
         //code

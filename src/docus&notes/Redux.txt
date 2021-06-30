@@ -19,8 +19,9 @@ Disadvantage of useContext:
 					</ItemProvider>
 				</AuthProvider>
 				
-			 2) it's not suitable frequently update the state.
-			 
+			2) it's not suitable high frequently updating the state.
+			        (eg)
+					like, posts,add items in cart
 
 __________________________________________________________________________________________________________________
 

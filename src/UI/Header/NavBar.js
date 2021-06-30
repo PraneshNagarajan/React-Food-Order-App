@@ -1,4 +1,4 @@
-import {Link} from 'react-router-dom'
+import {Link,useLocation} from 'react-router-dom'
 import { Navbar, Badge, Container, Nav, Button, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartPlus, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
@@ -8,6 +8,7 @@ import { AuthActions } from '../../store/redux-toolkit/loginRedux'
 import { CartToggleActions} from '../../store/redux-toolkit/cartToggleRedux'
 
 const NavBar = (props) => {
+  const pathName = useLocation().pathname;
   const dispatch = useDispatch();
   const [cartSize, setSize] = useState(0);
 
@@ -46,7 +47,7 @@ const NavBar = (props) => {
         <Navbar.Collapse id="Navbar-collapse">
           <Nav className="ml-1 mr-auto">
             <Nav.Item>
-              <Nav.Link active>Home</Nav.Link>
+              <Nav.Link className={pathName === "/homePage" ? 'active' : ''} as={Link} to="/homePage">Home</Nav.Link>
             </Nav.Item>
             <Nav.Item>
               <Nav.Link as={Link} to="/aboutPage">
@@ -54,7 +55,7 @@ const NavBar = (props) => {
               </Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link as={Link} to="/aboutPage">
+              <Nav.Link className={pathName === "/aboutPage" ? 'active' : ''}  as={Link} to="/aboutPage">
                 About
               </Nav.Link>
             </Nav.Item>

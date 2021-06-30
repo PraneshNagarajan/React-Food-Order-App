@@ -6,8 +6,9 @@ import { NotificationActions } from "../store/redux-toolkit/NotificationRedux";
 const useHttp = () => {
   const dispatch = useDispatch();
   const [error, setError] = useState([]);
+  const [response, setResponse] = useState([])
 
-  const request = (requestConfig, fetchData) => {
+  const request = (requestConfig, fetchResponse, fetchError) => {
     if (requestConfig.cart) {
       dispatch(
         NotificationActions.fetchNotifications({
@@ -25,7 +26,7 @@ const useHttp = () => {
         data: requestConfig.body ? requestConfig.body : null,
       })
         .then((response) => {
-          fetchData(response.data);
+          fetchResponse(response.data);
           if (requestConfig.cart) {
             dispatch(
               NotificationActions.fetchNotifications({
@@ -38,9 +39,7 @@ const useHttp = () => {
               dispatch(NotificationActions.fetchNotifications({ flag: false }));
             }, 300);
           }
-        })
-        .catch((error) => {
-          setError(error.message);
+        }).catch((error) => {
           if (requestConfig.cart) {
             dispatch(
               NotificationActions.fetchNotifications({
@@ -51,6 +50,11 @@ const useHttp = () => {
               })
             );
           }
+          if(error.response) {
+            fetchResponse(error.response.data.error.code+" : "+ error.response.data.error.message)
+            setError(error.response.data.error.code+" : "+ error.response.data.error.message)
+          }
+          
         });
     }, 3000);
   };
@@ -58,6 +62,7 @@ const useHttp = () => {
   return {
     request,
     error,
+    response
   };
 };
 export default useHttp;

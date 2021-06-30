@@ -1,32 +1,67 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useEffect , lazy, Suspense} from "react";
+import { useEffect, lazy, Suspense } from "react";
 import { Route, Switch, Redirect, useLocation } from "react-router-dom";
 import useHttp from "./Hooks/http-hook";
 import { useDispatch, useSelector } from "react-redux";
 import { CartItemActions } from "./store/redux-toolkit/CartItemRedux";
+import {AuthActions} from './store/redux-toolkit/loginRedux'
 import Layout from "./Components/Layout";
-import Spinner from './Components/Spinner'
+import Spinner from "./Components/Spinner";
+import { useMemo } from "react";
 //import { fetchCartData, sendCartData } from "./store/redux-toolkit/CartItemThunk";
-
 
 //__________________________________________________________________
 //Lazy-loading:
 //-------------------------
 //lazy-loading increase the performance of application. the component will download when move or visit the page instead download all components.
 // so it bundle size will reduce and ramp down download time.
-const LoginPage = lazy(() => import("./Pages/LoginPage"))
-const HomePage = lazy(() => import("./Pages/HomePage"))
-const AboutPage = lazy(() => import("./Pages/HomePage"))
+const LoginPage = lazy(() => import("./Pages/LoginPage"));
+const HomePage = lazy(() => import("./Pages/HomePage"));
+const AboutPage = lazy(() => import("./Pages/AboutPage"));
 
 let flag = true;
 
+
 function App() {
-  const location = useLocation();
   const dispatch = useDispatch();
   const http = useHttp();
   const cartItems = useSelector((state) => state.cartItems);
   const changed = useSelector((state) => state.cartItems.changed);
+  const isLogged = useSelector(state => state.auth.isLogged)
+
+
+  const calculatingTime = (expireTime) => {
+    const currentTime = new Date().getTime();
+    const endTime = new Date(expireTime).getTime()
+    return endTime - currentTime;
+  }
+
+  const clearStorage = () => {
+    sessionStorage.removeItem('token')
+    sessionStorage.removeItem('expireTime')
+  }
+console.log(isLogged)
+
+useEffect(() => {
+  const expireTime = sessionStorage.getItem('expireTime') 
+  console.log(expireTime)
+if(!!expireTime){
+  const duration = calculatingTime(expireTime);
+  console.log(duration)
+     if(duration <= 120000) {
+      dispatch(AuthActions.logout())
+      clearStorage()
+     } else {
+      setTimeout(() => {
+        console.log("---------")
+        dispatch(AuthActions.logout())
+        clearStorage()
+      }, duration);
+     }
+}
+ 
+},[isLogged])
   useEffect(() => {
     //Redux-thunk using 'action-creator' in toolkit
     //---------------------------------------------
@@ -106,12 +141,11 @@ function App() {
     //   <HomePage/>
     // </ItemsContext.Provider>
 
-    
-<Suspense fallback={<Spinner type="spinner-style-2" />}>
-{/* lazy-loading will take some time download untill 'suspense' will manage with some other actions with jsx code. */}
+    <Suspense fallback={<Spinner type="spinner-style-2" />}>
+      {/* lazy-loading will take some time download untill 'suspense' will manage with some other actions with jsx code. */}
 
-<Switch>
-      {/*  Switch excutes one Route on top-down approach.
+      <Switch>
+        {/*  Switch excutes one Route on top-down approach.
       (eg)
       ------
       if you want to route 'product page', but '/Product/:1' is match first also it routes to that url instaed of '/product'.
@@ -126,23 +160,25 @@ function App() {
                 <Route to="/product/:1" exact ><Component></Route>
                  <Route to="/product" ><Product-Component></Route>
       */}
-      <Route path="/" exact>
-        <Redirect to="/loginPage"></Redirect>
-      </Route>
-      <Route path="/loginPage">
-        <LoginPage />
-      </Route>
-      <Layout items={cartItems.item}>
-        <Route path="/homePage">
-          <HomePage items={cartItems.item} />
+        <Route path="/" exact>
+          <Redirect to="/loginPage"></Redirect>
         </Route>
-        <Route path="/aboutPage">
-          <AboutPage items={cartItems.item} />
+        <Route path="/loginPage">
+          {!isLogged && <LoginPage /> }
+          
         </Route>
-      </Layout>
-    </Switch>
- 
-</Suspense>
+        <Layout items={cartItems.item}>
+          <Route path="/homePage" exact>
+            {isLogged && <HomePage items={cartItems.item} /> }
+            {!isLogged && <Redirect to="/loginPage"></Redirect>}
+          </Route>
+          <Route path="/aboutPage">
+            {isLogged &&<AboutPage items={cartItems.item} />}
+            {!isLogged && <Redirect to="/loginPage"></Redirect>}
+          </Route>
+        </Layout>
+      </Switch>
+    </Suspense>
   );
 }
 

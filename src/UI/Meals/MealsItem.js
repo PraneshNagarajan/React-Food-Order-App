@@ -22,6 +22,10 @@ const MealsItem = () => {
     setSize(+event.target.value);
   };
 
+  const getData = useCallback((response) => {
+    setItems(response.length > 0 ? response : []);
+  });
+  
   useEffect(() => {
     httpRequest(
       {
@@ -30,11 +34,9 @@ const MealsItem = () => {
       },
       getData
     );
-  }, []);
+  }, [items]);
 
-  const getData = useCallback((response) => {
-    setItems(response.length > 0 ? response : []);
-  });
+  
 
   return (
     <div className="cart-item p-5 my-5">
